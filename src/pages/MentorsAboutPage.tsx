@@ -8,11 +8,32 @@ import { useAuth } from '@/lib/auth'
 import { CONTACT_EMAIL, CONTACT_MAILTO } from '@/lib/contact'
 import { coursePath } from '@/lib/courses'
 import { formatDate } from '@/lib/hooks'
-import { mentorBioExcerpt, mentorProfilePath, parseMentorNotes } from '@/lib/mentors'
+import { mentorBioExcerpt, mentorProfilePath, mentorSubjectTags, parseMentorNotes } from '@/lib/mentors'
 import { formatSlotTopics, SLOT_TOPICS_EMBED } from '@/lib/sessionTopics'
 import { usePageView } from '@/lib/stats'
 import { isSupabaseConfigured, supabase } from '@/lib/supabase'
 import type { AvailabilitySlot, Course, PublicMentorProfile } from '@/lib/types'
+
+function MentorSubjectLine({ name, focus }: { name: string; focus?: string }) {
+  const tags = mentorSubjectTags(name, focus ?? '')
+  if (tags.length > 0) {
+    return (
+      <div className="mentor-subject-tags" aria-label="Subjects">
+        {tags.map((tag) => (
+          <span key={tag} className="mentor-subject-tag">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  if (!focus?.trim()) return null
+  return (
+    <p className="muted" style={{ margin: 0, fontSize: '0.95rem' }}>
+      {focus}
+    </p>
+  )
+}
 
 export function MentorsAboutPage() {
   usePageView('/mentors')
@@ -96,11 +117,7 @@ export function MentorsAboutPage() {
                 <h2 style={{ margin: 0, fontSize: '1.25rem' }}>
                   <Link to={mentorProfilePath(m.mentor_slug)}>{m.display_name}</Link>
                 </h2>
-                {m.mentor_focus && (
-                  <p className="muted" style={{ margin: 0, fontSize: '0.95rem' }}>
-                    {m.mentor_focus}
-                  </p>
-                )}
+                <MentorSubjectLine name={m.display_name} focus={m.mentor_focus} />
                 <p className="muted" style={{ margin: 0, fontSize: '0.9rem' }}>
                   {m.session_count ?? 0} session{(m.session_count ?? 0) === 1 ? '' : 's'} led
                 </p>
@@ -280,11 +297,7 @@ export function MentorProfilePage() {
           <h1 className="page-title" style={{ marginBottom: '0.35rem' }}>
             {mentor.display_name}
           </h1>
-          {mentor.mentor_focus && (
-            <p className="lead" style={{ margin: 0 }}>
-              {mentor.mentor_focus}
-            </p>
-          )}
+          <MentorSubjectLine name={mentor.display_name} focus={mentor.mentor_focus} />
         </div>
       </div>
 

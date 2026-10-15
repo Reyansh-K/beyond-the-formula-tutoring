@@ -1480,6 +1480,25 @@ td .split-actions {
   background: var(--surface);
 }
 
+.mentor-subject-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.mentor-subject-tag {
+  display: inline-block;
+  padding: 0.12rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.35;
+  color: #1d4ed8;
+  background: var(--accent-blue-soft, #eff6ff);
+  border: 1px solid #93c5fd;
+  border-radius: 999px;
+}
+
 .mentor-card-rank {
   position: absolute;
   top: 0.65rem;

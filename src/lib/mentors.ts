@@ -27,6 +27,32 @@ export function mentorBioExcerpt(bio: string, max = 160) {
   return `${t.slice(0, max - 1).trimEnd()}…`
 }
 
+const NAMED_MENTOR_SUBJECTS: { match: (name: string) => boolean; subjects: string[] }[] = [
+  {
+    match: (name) => name.includes('guhan') && name.includes('karthick'),
+    subjects: ['PreCal', 'Calculus', 'SAT'],
+  },
+  {
+    match: (name) => name.includes('krish') && name.includes('anand'),
+    subjects: ['Algebra 2', 'PreCal'],
+  },
+]
+
+/** Subject tags under a mentor's name. Named tutors use their assigned subjects; others use a short comma-separated focus. */
+export function mentorSubjectTags(displayName: string, mentorFocus = ''): string[] {
+  const name = displayName.trim().toLowerCase().replace(/\s+/g, ' ')
+  const named = NAMED_MENTOR_SUBJECTS.find((row) => row.match(name))
+  if (named) return named.subjects
+
+  const parts = mentorFocus
+    .split(/[,·|]/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+  if (parts.length === 0) return []
+  if (parts.some((part) => part.length > 32 || part.includes('.'))) return []
+  return parts
+}
+
 export const MENTOR_NOTES_MAX = 8
 export const MENTOR_NOTE_MAX_LEN = 72
 export const MENTOR_NOTES_FIELD_MAX = 600
