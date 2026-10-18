@@ -3,6 +3,8 @@ import { useAuth } from '@/lib/auth'
 import { useAdminReportsInbox } from '@/lib/adminReportsInbox'
 import { useMessageInbox } from '@/lib/messageInbox'
 import { questionPath, useOpenQuestionsInbox } from '@/lib/openQuestionsInbox'
+import { useSmoothScroll } from '@/lib/smoothScroll'
+import { OnboardingTour } from '@/components/OnboardingTour'
 
 function navClass(base: string, isActive: boolean) {
   return isActive ? `${base} active` : base
@@ -15,6 +17,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { reportCount } = useAdminReportsInbox()
   const navigate = useNavigate()
   const location = useLocation()
+  useSmoothScroll()
   const path = location.pathname
   const onMySessions = path.includes('/students/my-sessions')
   const onMentorDashboard = path.includes('/mentors/dashboard')
@@ -56,6 +59,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </NavLink>
             <Link
               to="/students"
+              data-tour="student-hub"
               className={navClass('btn btn-ghost', studentsNavActive)}
               aria-current={studentsNavActive ? 'page' : undefined}
             >
@@ -187,11 +191,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <Link to="/privacy">Privacy Policy</Link>
           <span aria-hidden="true"> · </span>
           <Link to="/terms">Terms of Service</Link>
+          <span aria-hidden="true"> · </span>
+          <Link to="/?tour=1">Take the site tour</Link>
         </p>
         <p className="muted footer-note">
           Display names only. No personal contact details on public pages.
         </p>
       </footer>
+      <OnboardingTour />
     </>
   )
 }
