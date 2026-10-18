@@ -47,7 +47,8 @@ const STEPS: TourStep[] = [
     title: 'The student hub',
     body: (
       <p>
-        All learning materials live under <strong>Students</strong>. Open it, pick a subject (like
+        All learning materials live under <strong>Students</strong> (inside the menu on phones). Open
+        it, pick a subject (like
         Precalculus or SAT), and you will see that subject&rsquo;s courses, schedule, past sessions,
         questions, and free resources.
       </p>
@@ -123,8 +124,11 @@ const MARGIN = 16
 
 type Box = { x: number; y: number; w: number; h: number }
 
+/** First visible match, e.g. the phone menu button when the desktop nav link is hidden. */
 function findTarget(step: TourStep): HTMLElement | null {
-  return step.target ? document.querySelector<HTMLElement>(`[data-tour="${step.target}"]`) : null
+  if (!step.target) return null
+  const all = document.querySelectorAll<HTMLElement>(`[data-tour="${step.target}"]`)
+  return Array.from(all).find((el) => el.getClientRects().length > 0) ?? null
 }
 
 /** Shows once after sign-up (profile.tutorial_completed_at is null) and on `?tour=1`. */
